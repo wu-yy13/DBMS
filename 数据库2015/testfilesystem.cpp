@@ -2,7 +2,7 @@
  * testfilesystem.cpp
  *
  *  Created on: 2015年11月9日
- *      Author: wu-yy
+ *      Author: 吴永宇
  */
 #include "parser.h"
 #include"FileManager.h"
@@ -21,7 +21,7 @@ void RunStmt(const string& sql, Parser& p, FileManager& manager) {
 }
 
 int main(int argc, char** argv) {
-	remove("test.dbx");
+	//remove("test.dbx");
 	FileManager manager;
 	Parser parser;
 	
@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 				break;
 			if (sql.substr(0, 4) == "exit")
 			{
-				remove("test.dbx");
+				//remove("test.dbx");
 				break;
 				
 			}
@@ -76,5 +76,5 @@ int main(int argc, char** argv) {
 				
 		}
 	}
-	remove("test.dbx");
+	//remove("test.dbx");
 }

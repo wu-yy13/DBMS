@@ -27,7 +27,7 @@ public :
 	string dbName;
 	unordered_map<string, FileTable*> tables;
 	string tblFileName(const string& tbl) {
-		return dbName + ":" + tbl + ".db";
+		return dbName + "/" + tbl + ".db";
 	}
 	void checkType(Type type, const Object& obj) {
 		if (obj.is_null) {

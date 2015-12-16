@@ -10,7 +10,7 @@ show tables
 insert into table1 values (12, 'aaa'), (21, 'wangyan')
 use test
 select table1.id, table2.id from table1, table2 where table1.name = table2.name
-select table1.id from table1 where table1.name = 'wyyyy'
+select table1.id from table1 where table1.name = 'wy'
 select * from table1
 drop table table2
 show tables

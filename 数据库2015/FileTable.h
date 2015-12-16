@@ -113,18 +113,18 @@ private:
 		fout.close();
 	}
 public:
-	FileTable(const string& _filename, bool init = false) {
+	FileTable(const string& _filename, bool init = false):filename(_filename) {
 		ifstream in(filename, ios::in | ios::binary);
 		if (init) {
 			if (in)
 			{
 				throw "Table Already Exist!";
-				cout << "文件名字：" << _filename << endl;
+				cout << "文件名字：" << filename << endl;
 
 			}
 			in.close();
 			fstream out(filename, ios::out | ios::binary);
-			head = (HeadPage*)new char[PAGE_SIZE];
+			head = (HeadPage*)new  char[PAGE_SIZE];
 			LastInfoPage = (InfoPage*)new char[PAGE_SIZE];
 			memset(head, 0, PAGE_SIZE);
 			memset(LastInfoPage, 0, PAGE_SIZE);
@@ -144,6 +144,7 @@ public:
 			if (!in)
 				throw "Table Not Found!"+_filename;
 			head = (HeadPage*)new char[PAGE_SIZE];
+			memset(head, 0, PAGE_SIZE);
 			in.read((char*)(void*)head, PAGE_SIZE);
 			pages.push_back(head);
 			pageIndex[head] = 0;
