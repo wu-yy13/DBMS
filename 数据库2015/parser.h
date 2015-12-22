@@ -1,3 +1,9 @@
+/*
+* parser.h
+*
+*  Created on: 2015Äê10ÔÂ28ÈÕ
+*      Author: ÎâÓÀÓî
+*/
 #ifndef PARSER_H
 #define PARSER_H
 #include "stmt.h"

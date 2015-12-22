@@ -1,3 +1,9 @@
+/*
+* FileTable.h
+*
+*  Created on: 2015年10月28日
+*      Author: 吴永宇
+*/
 #ifndef FILE_TABLE
 #define FILE_TABLE
 #include <string>
@@ -14,7 +20,13 @@
 #include"pagedef.h"
 using namespace std;
 const int NAME_LEN = 50;
-
+/**
+* @结构体：Type
+* @对象 type :类型
+* @对象 null :bool类型，是否为空
+* @对象 size :大小
+* @对象 名字 :char[]类型
+*/
 struct Type {
 	TYPE type;
 	bool null;
@@ -40,11 +52,24 @@ struct Info {
 };
 const int MaxCol = (PAGE_SIZE - 128) / sizeof(Type);
 const int MaxInfo = (PAGE_SIZE - 16) / sizeof(Info);
-struct TableDesc {   //描述表的大小和每行存储的记录
+/**
+* @结构体：TableDesc
+* @对象 int colSize :行的数量
+* @对象 Type colype[] :行的内容，最大126个
+*@功能：描述表的大小和每行存储的记录
+*/
+struct TableDesc { 
 	int colSize;
 	Type colType[MaxCol];
 };
-struct HeadPage {  //页式存储 infoHeadPage,pageCount keyname[NAME_LEN] TableDesc desc
+/*
+*@功能：页式存储 
+*infoHeadPage : 记录页码
+*pageCount : 记录页的数量
+*keyname[NAME_LEN] :类型 char
+*TableDesc desc :类型 TableDesc
+*/
+struct HeadPage {
 	int infoHeadPage;
 	int pageCount;
 	char keyname[NAME_LEN];
@@ -52,19 +77,28 @@ struct HeadPage {  //页式存储 infoHeadPage,pageCount keyname[NAME_LEN] TableDesc
 };
 
 /**
-* 下一页nextPage
-* 页面大小 size
-* 存放页info
+* 下一页nextPage页码 : 类型int
+* 页面大小 size : 类型int
+* 存放页infos[] : 类型Info,大小681
 */
 struct InfoPage {
 	int nextPage;
 	int size;
 	Info infos[MaxInfo];
 };
+/*
+
+RowBitmapSize=2:列的固定大小2
+filename: 表的文件名
+pages: 向量存储页
+pageIndex: map存储页和页码
+head: 头页
+LastInfoPage : 尾页
+rowSize :行的数目
+filename : 表的文件名
+*/
 class FileTable {
 public:
-
-	//**
 	int keyoffset;
 	static const int RowBitmapSize = 2;
 	string s;
@@ -78,9 +112,7 @@ public:
 	int rowSize;
 	HeadPage* head;
 	InfoPage* LastInfoPage;
-	
-
-	//**************************************************
+//**
 private:
 	multiset<string> isExist;
 	multiset<string> isOpen;
@@ -112,6 +144,7 @@ private:
 		}
 		fout.close();
 	}
+	//
 public:
 	FileTable(const string& _filename, bool init = false):filename(_filename) {
 		ifstream in(filename, ios::in | ios::binary);
@@ -164,9 +197,9 @@ public:
 				offset += head->desc.colType[i].size;
 			int nullMask = 1 << keyoffset;
 			TYPE type = head->desc.colType[keyoffset].type;
-			int size = head->desc.colType[keyoffset].type;
+			int size = head->desc.colType[keyoffset].size;  //此处调试
 
-
+			//头页的页码
 			int infoIdx = head->infoHeadPage;
 			while (infoIdx != 0) {
 				InfoPage* infos = (InfoPage*)(void*)pages[infoIdx];
@@ -216,7 +249,8 @@ public:
 		return pages[page_id];
 	}
 	void* genNewRecord() {
-		if (emptyRecords.empty()) {
+
+		if (emptyRecords.empty()) {		
 			int new_page = newPage();
 			char* page = (char*)getPage(new_page);
 			for (int i = 0; i + rowSize <= PAGE_SIZE; i += rowSize) {
@@ -226,6 +260,7 @@ public:
 					LastInfoPage->nextPage = new_info_page;
 					LastInfoPage = (InfoPage*)getPage(new_info_page);
 				}
+
 				Info* info = LastInfoPage->infos + LastInfoPage->size++;
 				info->page_id = new_page;
 				info->offset = i;
@@ -244,6 +279,8 @@ public:
 		setDirty(info);
 		return rec;
 	}
+	// Info置为空闲。usedRecords移除记录,emptyRecords 插入记录
+
 	void removeRecord(void* rec) {
 		Info* info = recordInfoMap[rec];
 		info->free = true;
@@ -251,6 +288,7 @@ public:
 		usedRecords.erase(rec);
 
 	}
+	//找到根据head->keyname 找到行偏移量
 	void initKey() {
 		if (strcmp(head->keyname, "") == 0) {
 			keyoffset = -1;
@@ -263,6 +301,7 @@ public:
 		}
 
 	}
+	//返回新创建页的页码
 	int newPage() {
 		char* buf = new char[PAGE_SIZE];
 		memset(buf, 0, PAGE_SIZE);

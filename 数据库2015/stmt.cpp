@@ -1,3 +1,9 @@
+/*
+* stmt.cpp
+*
+*  Created on: 2015Äê10ÔÂ28ÈÕ
+*      Author: ÎâÓÀÓî
+*/
 #include <iostream>
 #include <cstdlib>
 

@@ -1,3 +1,9 @@
+/*
+*  parser.cpp
+*
+*  Created on: 2015Äê10ÔÂ28ÈÕ
+*      Author: ÎâÓÀÓî
+*/
 #include <iostream>
 #include <cstdlib>
 #include <unordered_map>
@@ -44,6 +50,7 @@ static const unordered_set<char> IDChar = {
 static const unordered_set<string> Op = {
     ">", "<", "=", "!=", ">=", "<=", ",", ".",  "*", "(", ")", ";",
 };
+
 static string toLower(const string& str) {
     string ret;
     ret.resize(str.size());

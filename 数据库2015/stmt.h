@@ -1,3 +1,9 @@
+/*
+* stmt.h
+*
+*  Created on: 2015Äê10ÔÂ28ÈÕ
+*      Author: ÎâÓÀÓî
+*/
 #ifndef Stmt_H
 #define Stmt_H
 #include "FileManager.h"

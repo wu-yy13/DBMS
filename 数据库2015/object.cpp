@@ -1,9 +1,15 @@
+/*
+* object.cpp
+*
+*  Created on: 2015ƒÍ10‘¬28»’
+*      Author: Œ‚”¿”Ó
+*/
 #include "object.h"
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-
-Object LiteralManager::GetVarChar(std::string& l) {
+using namespace std;
+Object LiteralManager::GetVarChar(string& l) {
 	Object obj;
 	char* buf = new char[MAX_LENGTH];
 	memcpy(buf, l.data(), l.size());
@@ -62,7 +68,7 @@ Object ReadExpr::getObj(void* l, void* r) {
 	return ret;
 }
 
-void ReadExpr::Use(const std::string& lname, const std::string& rname, TableDesc* ldesc, TableDesc* rdesc) {
+void ReadExpr::Use(const string& lname, const string& rname, TableDesc* ldesc, TableDesc* rdesc) {
 	offset = 2;
 	if (tbl == "") {
 		nullMask = 1;
@@ -147,8 +153,8 @@ bool op_##OP(const Object& lobj, const Object& robj){\
     }\
 }
 
-DEF_OP(ne, != )
-DEF_OP(lt, <)
+	DEF_OP(ne, != )
+	DEF_OP(lt, <)
 	DEF_OP(gt, >)
 	DEF_OP(le, <= )
 	DEF_OP(ge, >= )

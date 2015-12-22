@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
 			cout << "文件没有找到" << endl;
 			return 0;
 		}
+		cout << "FileName : " << argv[1]  << endl;
 		vector<char> sql;
 		char c = '\0';
 		while (input) {
@@ -38,6 +39,7 @@ int main(int argc, char** argv) {
 			if (x == -1)
 				break;
 			if (c == '\0' && x == ';') {
+				cout << "Ins :"<<string(sql.begin(), sql.end()) << endl;
 				RunStmt(string(sql.begin(), sql.end()), parser, manager);
 
 				sql.clear();

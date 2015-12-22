@@ -1,3 +1,9 @@
+/*
+* FileManager.h
+*
+*  Created on: 2015年10月28日
+*      Author: 吴永宇
+*/
 #ifndef FILE_MANAGER
 #define FILE_MANAGER
 #include <string>
@@ -15,20 +21,41 @@
 //#include "../MyLinkList.h"
 #define MAX_FILE_NUM 128
 using namespace std;
+/*
+@struct
+@parm int tableCount
+@ tables[20][NAME_LEN]  其中NAME_LNE=50
+*/
 struct DBInfo {
 	int tableCount;
 	char tables[20][NAME_LEN];
 };
 
-
+/*
+@Class
+@parm string dbName  数据库名字
+@parm unordered_map<string,FileTable*>tables
+*/
 class FileManager {
 public :
-	//**
 	string dbName;
 	unordered_map<string, FileTable*> tables;
+	/*
+	* @函数名tbFileName
+	* @参数tbl:表的名字
+	* 功能:
+	* 返回:数据库的名字/+表的名字+.db
+	*/
 	string tblFileName(const string& tbl) {
 		return dbName + "/" + tbl + ".db";
 	}
+	/*
+	* @函数名checkType
+	* @参数type:类型
+	* @参数obj:
+	* 功能:检测type的类型是否和obj的类型一致
+	* 返回:成功操作返回,失败报错
+	*/
 	void checkType(Type type, const Object& obj) {
 		if (obj.is_null) {
 			if (!type.null)
@@ -38,7 +65,13 @@ public :
 		if (obj.type != type.type)
 			throw "Type Check Error";
 	}
-
+	/*
+	* @函数名writeBinRow
+	* @参数buf:写入BUf
+	* @参数desc:文件的行列描述
+	* @参数objs:写入的行对象内容
+	* 功能:将objs 写入特定的表的BUF上面
+	*/
 	void WriteBinRow(void* buf, const TableDesc& desc, const vector<Object>& objs) {
 		unsigned short nullMask = 1;
 		unsigned short& nullX = *(unsigned short*)buf;
@@ -53,7 +86,13 @@ public :
 			(char*&)iter += desc.colType[i].size;
 		}
 	}
-
+	/*
+	* @函数名writeRow
+	* @参数rec:存储的内容行是否为空
+	* @参数desc:表
+	* 功能:将表的每一行输出出来
+	* 返回:void
+	*/
 	void WriteRow(void* rec, const TableDesc& desc) {
 		unsigned short nullmap = *(unsigned short*)rec;
 		(char*&)rec += 2;
@@ -77,7 +116,7 @@ public :
 			(char*&)rec += t.size;
 		}
 	}
-
+	// select from  打印两个表的内容
 	void WriteObj(Object obj) {
 		if (obj.is_null) {
 			cout << "NULL ";
@@ -95,6 +134,13 @@ public :
 			};
 		}
 	}
+	/*
+	* @函数名getTable
+	* @参数tbl:表的名字
+	* @参数init:表是否存在
+	* 功能:根据根据表的名字找到表，若表不存在则创建
+	* 返回:找到的表
+	*/
 	FileTable* getTable(const string& tbl, bool init) {
 		string t_tbl = tblFileName(tbl);
 		if (init) {
@@ -113,6 +159,13 @@ public :
 			return ptbl;
 		}
 	}
+	/*
+	* @函数名filterOne
+	* @参数tbl:表的名字
+	* @参数conds:条件向量
+	* 功能:
+	* 返回:
+	*/
 	vector<void*> filterOne(const string& tbl, const vector<Condition>& conds) {
 		vector<void*> filtered;
 		FileTable* table = getTable(tbl, false);
@@ -176,7 +229,7 @@ public :
 			if (tblX->keyoffset != -1) {
 				Object keyobj = row[tblX->keyoffset];
 				if (auto iter = tblX->key_object.find(keyobj) != tblX->key_object.end())
-					throw "primary key clustered";
+					throw "Primary Key Clustered";
 				tblX->key_object.insert(keyobj);
 			}
 		}
@@ -225,7 +278,7 @@ public :
 					WriteRow(row, table->head->desc);
 				}
 				else {
-					cout << "obj is nullptr" << endl;
+					//cout << "obj is nullptr" << endl;
 					for (auto& expr : *sel)
 						WriteObj(expr->getObj(row, nullptr));
 				}
@@ -367,10 +420,9 @@ public :
 		for (int i = 0; i < info.tableCount; i++)
 			cout << info.tables[i] << endl;
 	}
-	//**
 
 private:
-	//FileTable* ftable;
+
 	int fd[MAX_FILE_NUM];
 	MyBitMap* fm;
 	MyBitMap* tm;

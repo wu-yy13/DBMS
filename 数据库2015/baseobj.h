@@ -2,15 +2,24 @@
  * baseobj.h
  *
  *  Created on: 2015年10月28日
- *      Author: wu-yy
+ *      Author: 吴永宇
  */
 
-#ifndef DBMANAGER_BASEOBJ_H_
-#define DBMANAGER_BASEOBJ_H_
+#ifndef _BASEOBJ_H_
+#define _BASEOBJ_H_
 #include <string.h>
 #include<stdlib.h>
 #include "type.h"
 using namespace std;
+/*
+*@brief struct
+*@parm void* loc
+*@parm int size
+*@parm Type type
+*@parm bool is_null
+*
+*
+*/
 struct Object {
     void* loc;
     int size;
@@ -38,4 +47,4 @@ inline bool operator!=(const Object& lhs, const Object& rhs) {
 
 }
 
-#endif /* DBMANAGER_BASEOBJ_H_ */
+#endif

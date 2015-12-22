@@ -1,13 +1,25 @@
+/*
+* object.h
+*
+*  Created on: 2015年10月28日
+*      Author: 吴永宇
+*/
 #ifndef OBJECT_H
 #define OBJECT_H
 #include <string>
 #include "type.h"
 #include "baseobj.h"
 #include "FileTable.h"
+using namespace std;
+/**
+@chars:存储varchar 类型的Object
+@ ints : 存储int类型的Object
+
+*/
 struct LiteralManager {
 	const int MAX_LENGTH = 200;
-	std::vector<char*> chars;
-	std::vector<int*> ints;
+	vector<char*> chars;
+	vector<int*> ints;
 	Object GetInt(int l);
 	Object GetVarChar(std::string& l);
 	Object GetNull();
@@ -23,7 +35,7 @@ struct ReadExpr : public Expr {
 	int size;
 	int nullMask;
 	TYPE type;
-	std::string tbl, name;
+	string tbl, name;
 	ReadExpr() {};
 	ReadExpr(const std::string& _name) : tbl(""), name(_name) {}
 	ReadExpr(const std::string& _tbl, const std::string& _name) : tbl(_tbl), name(_name) {}
