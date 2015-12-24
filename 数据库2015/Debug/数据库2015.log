@@ -1,22 +1,7 @@
-﻿生成启动时间为 2015/12/22 20:54:02。
+﻿生成启动时间为 2015/12/24 12:32:41。
      1>项目“C:\Users\lenovo\Desktop\数据库2015\数据库2015\数据库2015.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         F:\VisualStudio2015\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt parser.cpp stmt.cpp testfilesystem.cpp
-         parser.cpp
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\type.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\baseobj.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\pagedef.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filetable.h(216): warning C4800: “int”: 将值强制为布尔值“true”或“false”(性能警告)
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(172): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(178): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(195): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(202): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(225): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(362): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\parser.cpp(57): warning C4018: “<”: 有符号/无符号不匹配
-         正在生成代码...
-         正在编译...
+         F:\VisualStudio2015\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt testfilesystem.cpp
          testfilesystem.cpp
      1>c:\users\lenovo\desktop\数据库2015\数据库2015\testfilesystem.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
@@ -24,25 +9,15 @@
      1>c:\users\lenovo\desktop\数据库2015\数据库2015\baseobj.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>c:\users\lenovo\desktop\数据库2015\数据库2015\pagedef.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>c:\users\lenovo\desktop\数据库2015\数据库2015\filetable.h(216): warning C4800: “int”: 将值强制为布尔值“true”或“false”(性能警告)
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(172): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(178): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(195): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(202): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(225): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(362): warning C4018: “<”: 有符号/无符号不匹配
-         stmt.cpp
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\type.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\baseobj.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\pagedef.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filetable.h(216): warning C4800: “int”: 将值强制为布尔值“true”或“false”(性能警告)
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(172): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(178): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(195): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(202): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(225): warning C4018: “<”: 有符号/无符号不匹配
-     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(362): warning C4018: “<”: 有符号/无符号不匹配
-         正在生成代码...
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(177): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(183): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(200): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(207): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(230): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\filemanager.h(381): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\testfilesystem.cpp(18): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\testfilesystem.cpp(41): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\lenovo\desktop\数据库2015\数据库2015\testfilesystem.cpp(57): warning C4018: “<”: 有符号/无符号不匹配
        Link:
          F:\VisualStudio2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\lenovo\Desktop\数据库2015\Debug\数据库2015.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\lenovo\Desktop\数据库2015\Debug\数据库2015.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\lenovo\Desktop\数据库2015\Debug\数据库2015.lib" /MACHINE:X86 Debug\object.obj
          Debug\parser.obj
@@ -53,4 +28,4 @@
 
 已成功生成。
 
-已用时间 00:00:08.36
+已用时间 00:00:02.42

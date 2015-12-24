@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <unordered_map>
 #include <vector>
+#include<direct.h>
 #include "FileTable.h"
 #include "object.h"
 #include"pagedef.h"
@@ -96,13 +97,17 @@ public :
 	void WriteRow(void* rec, const TableDesc& desc) {
 		unsigned short nullmap = *(unsigned short*)rec;
 		(char*&)rec += 2;
-		for (int i = 0; i < desc.colSize; i++) {
+
+		for (int i = 0; i < desc.colSize; i++) 
+		{
 			const Type& t = desc.colType[i];
-			if (nullmap & (1 << i)) {
+			if (nullmap & (1 << i)) 
+			{
 				cout << "NULL ";
 			}
 			else {
-				switch (t.type) {
+				switch (t.type) 
+				{
 				case TYPE_INT:
 					cout << *(int*)rec << " ";
 					break;
@@ -272,15 +277,27 @@ public :
 			if (sel != nullptr)
 				for (auto& expr : *sel)
 					expr->Use(tbl1,"", &table->head->desc, nullptr);
-			for (auto row : filtered) {
-				if (sel == nullptr) {
+
+			//此处打印表名字
+			for (int i = 0; i < table->head->desc.colSize; i++)
+			{
+				cout << table->head->desc.colType[i].name << " ";
+			}
+			cout << endl;
+			for (auto row : filtered) 
+			{
+				if (sel == nullptr) 
+				{
 
 					WriteRow(row, table->head->desc);
 				}
-				else {
-					//cout << "obj is nullptr" << endl;
+				else 
+				{
 					for (auto& expr : *sel)
+					{
 						WriteObj(expr->getObj(row, nullptr));
+					}
+					
 				}
 				cout << endl;
 			}
@@ -292,12 +309,14 @@ public :
 			if (sel != nullptr)
 				for (auto& expr : *sel)
 					expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
-			for (auto row : filtered) {
+			for (auto row : filtered)
+			{
 				if (sel == nullptr) {
 					WriteRow(row.first, table1->head->desc);
 					WriteRow(row.second, table2->head->desc);
 				}
-				else {
+				else 
+				{
 					for (auto& expr : *sel)
 						WriteObj(expr->getObj(row.first, row.second));
 				}
@@ -389,15 +408,24 @@ public :
 		dbName = db;
 	}
 	void CreateDB(const string& db) {
+
+		if (_mkdir(db.c_str()) != 0)
+		{
+			string error= "Problem creating database " + db;
+			throw error;
+
+		}
 		fstream out(dbName + ".dbx", ios::out | ios::binary | ios::trunc);
 		DBInfo info;
 		info.tableCount = 0;
 		out.write((char*)(void*)&info, sizeof(info));
 		out.close();
 	}
+
 	void DropDB(const string& db) {
 		remove((dbName + ".dbx").c_str());
 	}
+
 	void Desc(const string& tbl) {
 		FileTable* table = getTable(tbl, false);
 		for (int i = 0; i < table->head->desc.colSize; i++) {

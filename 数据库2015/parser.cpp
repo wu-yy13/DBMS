@@ -70,7 +70,7 @@ Parser::TokenList Parser::tokenize(const string& sql) {
         if (iter == sql.end())
             break;
         Token t;
-        if (*iter == '"' || *iter == '\'') {
+        if (*iter == '"' || *iter == '\'') { //Óöµ½ "" 
             char flag = *iter;
             auto beg = ++iter;
             for (; iter != sql.end() && *iter != flag; iter++);
