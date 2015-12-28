@@ -26,6 +26,7 @@ struct SelectStmt : public Stmt {
     string tbl1, tbl2;
     vector<Condition> conds;
     vector<Expr*>* exprs;
+	string type;
     virtual void Run(FileManager& manager);
 };
 struct UpdateStmt : public Stmt {

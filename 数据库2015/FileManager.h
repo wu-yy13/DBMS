@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <vector>
 #include<direct.h>
+#include<limits>
 #include "FileTable.h"
 #include "object.h"
 #include"pagedef.h"
@@ -121,6 +122,38 @@ public :
 			(char*&)rec += t.size;
 		}
 	}
+	/*
+	* @函数名 ReturnRow
+	* @参数rec:存储的内容行是否为空
+	* @参数desc:表
+	* 功能:将表的每一行输出出来
+	* 返回:void
+	*/
+	long long ReturnRow(void* rec, const TableDesc& desc) {
+		unsigned short nullmap = *(unsigned short*)rec;
+		(char*&)rec += 2;
+
+		for (int i = 0; i < desc.colSize; i++)
+		{
+			const Type& t = desc.colType[i];
+			if (nullmap & (1 << i))
+			{
+				return 0;
+			}
+			else {
+				switch (t.type)
+				{
+				case TYPE_INT:
+					return  *(int*)rec ;
+					break;
+				case TYPE_VARCHAR:
+					throw "Is not int type error";
+					break;
+				};
+			}
+			(char*&)rec += t.size;
+		}
+	}
 	// select from  打印两个表的内容
 	void WriteObj(Object obj) {
 		if (obj.is_null) {
@@ -135,6 +168,22 @@ public :
 				for (char* p = (char*)obj.loc; *p && p != (char*)obj.loc + obj.size; p++)
 					cout << *p;
 				cout << " ";
+				break;
+			};
+		}
+	}
+	// select from  打印两个表的内容
+	long long ReturnObj(Object obj) {
+		if (obj.is_null) {
+			return 0;
+		}
+		else {
+			switch (obj.type) {
+			case TYPE_INT:
+				return *(int*)obj.loc;
+				break;
+			case TYPE_VARCHAR:
+				throw "Is not int type error";
 				break;
 			};
 		}
@@ -269,59 +318,415 @@ public :
 		}
 		table->writeback();
 	}
-	void Select(const string& tbl1, const string& tbl2, const vector<Condition>& conds, vector<Expr*>* sel = nullptr) {
-		if (tbl2 == "") {
+	void Select(const string& tbl1, const string& tbl2,  const string &type, const vector<Condition>& conds, vector<Expr*>* sel = nullptr) {
+		
+		if (type == "sum")
+		{
+			if (tbl2 == "") {
 
-			auto filtered = filterOne(tbl1, conds);
-			auto table = getTable(tbl1, false);
-			if (sel != nullptr)
-				for (auto& expr : *sel)
-					expr->Use(tbl1,"", &table->head->desc, nullptr);
-
-			//此处打印表名字
-			for (int i = 0; i < table->head->desc.colSize; i++)
-			{
-				cout << table->head->desc.colType[i].name << " ";
-			}
-			cout << endl;
-			for (auto row : filtered) 
-			{
-				if (sel == nullptr) 
-				{
-
-					WriteRow(row, table->head->desc);
-				}
-				else 
-				{
+				auto filtered = filterOne(tbl1, conds);
+				auto table = getTable(tbl1, false);
+				if (sel != nullptr)
 					for (auto& expr : *sel)
+						expr->Use(tbl1, "", &table->head->desc, nullptr);
+				long long sum = 0;
+				for (auto row : filtered)
+				{
+
+					if (sel == nullptr) // 选择 * 
 					{
-						WriteObj(expr->getObj(row, nullptr));
+						sum+=ReturnRow(row, table->head->desc);
+					}
+					else
+					{
+						for (auto& expr : *sel)
+						{
+							sum+=ReturnObj(expr->getObj(row, nullptr));
+						}
+
 					}
 					
 				}
-				cout << endl;
+				cout << sum << endl;
+			}
+			
+			else {
+				auto filtered = filterTwo(tbl1, tbl2, conds);
+				auto table1 = getTable(tbl1, false);
+				auto table2 = getTable(tbl2, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
+				long long sum1 = 0;
+				long long sum2 = 0;
+				long long sumx[100];
+				bool two = false;
+	
+				for (int ii = 0; ii <100; ii++)
+					sumx[ii] = 0;
+				for (auto row : filtered)
+				{
+					if (sel == nullptr) {
+						sum1+=ReturnRow(row.first, table1->head->desc);
+						sum2+=ReturnRow(row.second, table2->head->desc);
+						two = true;
+					}
+					else
+					{
+						int ii = 0;
+						for (auto& expr : *sel)
+						{
+							sumx[ii] += ReturnObj(expr->getObj(row.first, row.second));
+							ii++;
+						}
+						
+					}
+				}
+				if (two)
+					cout << sum1 << " " << sum2 << endl;
+				else
+				{
+					for (int ii = 0; ii < (*sel).size();ii++)
+					cout << sumx[ii] <<" ";
+
+					cout << endl;
+				}
+				
+
+			}
+			
+		}
+		else if (type == "avg")
+		{
+			if (tbl2 == "") {
+
+				auto filtered = filterOne(tbl1, conds);
+				auto table = getTable(tbl1, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, "", &table->head->desc, nullptr);
+				long long sum = 0;
+				long long count = 0;
+				for (auto row : filtered)
+				{
+
+					if (sel == nullptr) // 选择 * 
+					{
+						count++;
+						sum += ReturnRow(row, table->head->desc);
+					}
+					else
+					{
+						for (auto& expr : *sel)
+						{
+							count++;
+							sum += ReturnObj(expr->getObj(row, nullptr));
+						}
+
+					}
+
+				}
+				if (count == 0)
+				{
+					cout << 0 << endl;
+				}
+				else
+				{
+					cout << double(sum/(double)count) << endl;
+				}
+				
+			}
+
+			else {
+				auto filtered = filterTwo(tbl1, tbl2, conds);
+				auto table1 = getTable(tbl1, false);
+				auto table2 = getTable(tbl2, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
+				long long sum1 = 0;
+				long long sum2 = 0;
+				long long count1 = 0;
+				long long count2 = 0;
+				long long sumx[100];
+				long long countx[100];
+				bool two = false;
+
+				for (int ii = 0; ii < 100; ii++)
+				{
+					sumx[ii] = 0;
+					countx[ii] = 0;
+				}
+				for (auto row : filtered)
+				{
+					if (sel == nullptr) {
+						count1++;
+						sum1 += ReturnRow(row.first, table1->head->desc);
+						count2++;
+						sum2 += ReturnRow(row.second, table2->head->desc);
+						two = true;
+					}
+					else
+					{
+						int ii = 0;
+						for (auto& expr : *sel)
+						{
+							sumx[ii] += ReturnObj(expr->getObj(row.first, row.second));
+							countx[ii]++;
+							ii++;
+						}
+
+					}
+				}
+				if (two)
+				{
+					cout << sum1 << " " << sum2 << endl;
+					if (count1 == 0)
+					{
+						cout << 0 << " ";
+					}
+					else
+					{
+						cout << double(sum1 / (double)count1) <<" ";
+					}
+					if (count2 == 0)
+					{
+						cout << 0 << " ";
+					}
+					else
+					{
+						cout << double(sum2 / (double)count2) <<" ";
+					}
+					cout << endl;
+				}
+					
+				else
+				{
+					for (int ii = 0; ii < (*sel).size(); ii++)
+					{
+						if (countx[ii] == 0)
+							cout << 0 << " ";
+						else
+							cout << double(sumx[ii] / (double)countx[ii]) << " ";
+					}
+					cout << endl;
+				}
+
+
 			}
 		}
-		else {
-			auto filtered = filterTwo(tbl1, tbl2, conds);
-			auto table1 = getTable(tbl1, false);
-			auto table2 = getTable(tbl2, false);
-			if (sel != nullptr)
-				for (auto& expr : *sel)
-					expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
-			for (auto row : filtered)
-			{
-				if (sel == nullptr) {
-					WriteRow(row.first, table1->head->desc);
-					WriteRow(row.second, table2->head->desc);
-				}
-				else 
-				{
+		else if (type == "max")
+		{
+			if (tbl2 == "") {
+
+				auto filtered = filterOne(tbl1, conds);
+				auto table = getTable(tbl1, false);
+				if (sel != nullptr)
 					for (auto& expr : *sel)
-						WriteObj(expr->getObj(row.first, row.second));
+						expr->Use(tbl1, "", &table->head->desc, nullptr);
+				long long max = (numeric_limits< long long>::min)();
+				for (auto row : filtered)
+				{
+
+					if (sel == nullptr) // 选择 * 
+					{
+						if(max<ReturnRow(row, table->head->desc))
+							max= ReturnRow(row, table->head->desc);
+					}
+					else
+					{
+						for (auto& expr : *sel)
+						{
+							if (max < ReturnObj(expr->getObj(row, nullptr)))
+								max = ReturnObj(expr->getObj(row, nullptr));
+						}
+
+					}
+
 				}
-				cout << endl;
+				cout << max << endl;
 			}
+
+			else {
+				auto filtered = filterTwo(tbl1, tbl2, conds);
+				auto table1 = getTable(tbl1, false);
+				auto table2 = getTable(tbl2, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
+				long long max1 = (numeric_limits< long long>::min)();
+				long long max2 = (numeric_limits< long long>::min)();
+				long long maxx[100];
+				bool two = false;
+
+				for (int ii = 0; ii < 100; ii++)
+					maxx[ii] = (numeric_limits< long long>::min)();
+				for (auto row : filtered)
+				{
+					if (sel == nullptr) {
+						if(max1<ReturnRow(row.first, table1->head->desc))
+							max1 = ReturnRow(row.first, table1->head->desc);
+						if(max2< ReturnRow(row.second, table2->head->desc))
+							max2 = ReturnRow(row.second, table2->head->desc);
+						two = true;
+					}
+					else
+					{
+						int ii = 0;
+						for (auto& expr : *sel)
+						{
+							if(maxx[ii]<ReturnObj(expr->getObj(row.first, row.second)))
+								maxx[ii] = ReturnObj(expr->getObj(row.first, row.second));
+							ii++;
+						}
+
+					}
+				}
+				if (two)
+					cout << max1 << " " << max2 << endl;
+				else
+				{
+					for (int ii = 0; ii < (*sel).size(); ii++)
+						cout << maxx[ii] << " ";
+
+					cout << endl;
+				}
+			}
+		}
+		else if (type == "min")
+		{
+			if (tbl2 == "") {
+
+				auto filtered = filterOne(tbl1, conds);
+				auto table = getTable(tbl1, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, "", &table->head->desc, nullptr);
+				long long min = (numeric_limits< long long>::max)();
+				for (auto row : filtered)
+				{
+
+					if (sel == nullptr) // 选择 * 
+					{
+						if (min>ReturnRow(row, table->head->desc))
+							min = ReturnRow(row, table->head->desc);
+					}
+					else
+					{
+						for (auto& expr : *sel)
+						{
+							if (min > ReturnObj(expr->getObj(row, nullptr)))
+								min = ReturnObj(expr->getObj(row, nullptr));
+						}
+
+					}
+
+				}
+				cout << min << endl;
+			}
+
+			else {
+				auto filtered = filterTwo(tbl1, tbl2, conds);
+				auto table1 = getTable(tbl1, false);
+				auto table2 = getTable(tbl2, false);
+				if (sel != nullptr)
+					for (auto& expr : *sel)
+						expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
+				long long min1 = (numeric_limits< long long>::max)();
+				long long min2 = (numeric_limits< long long>::max)();
+				long long minx[100];
+				bool two = false;
+
+				for (int ii = 0; ii < 100; ii++)
+					minx[ii] = (numeric_limits< long long>::max)();
+				for (auto row : filtered)
+				{
+					if (sel == nullptr) {
+						if (min1>ReturnRow(row.first, table1->head->desc))
+							min1 = ReturnRow(row.first, table1->head->desc);
+						if (min2> ReturnRow(row.second, table2->head->desc))
+							min2 = ReturnRow(row.second, table2->head->desc);
+						two = true;
+					}
+					else
+					{
+						int ii = 0;
+						for (auto& expr : *sel)
+						{
+							if (minx[ii]>ReturnObj(expr->getObj(row.first, row.second)))
+								minx[ii] = ReturnObj(expr->getObj(row.first, row.second));
+							ii++;
+						}
+
+					}
+				}
+				if (two)
+					cout << min1 << " " << min2 << endl;
+				else
+				{
+					for (int ii = 0; ii < (*sel).size(); ii++)
+						cout << minx[ii] << " ";
+
+					cout << endl;
+				}
+			}
+		}
+		else
+		{
+			
+					if (tbl2 == "") {
+
+					auto filtered = filterOne(tbl1, conds);
+					auto table = getTable(tbl1, false);
+					if (sel != nullptr)
+						for (auto& expr : *sel)
+							expr->Use(tbl1, "", &table->head->desc, nullptr);
+
+					//此处打印表名字
+					for (int i = 0; i < table->head->desc.colSize; i++)
+					{
+						cout << table->head->desc.colType[i].name << " ";
+					}
+					cout << endl;
+					for (auto row : filtered)
+					{
+						if (sel == nullptr)
+						{
+
+							WriteRow(row, table->head->desc);
+						}
+						else
+						{
+							for (auto& expr : *sel)
+							{
+								WriteObj(expr->getObj(row, nullptr));
+							}
+
+						}
+						cout << endl;
+					}
+				}
+				else {
+					auto filtered = filterTwo(tbl1, tbl2, conds);
+					auto table1 = getTable(tbl1, false);
+					auto table2 = getTable(tbl2, false);
+					if (sel != nullptr)
+						for (auto& expr : *sel)
+							expr->Use(tbl1, tbl2, &table1->head->desc, &table2->head->desc);
+					for (auto row : filtered)
+					{
+						if (sel == nullptr) {
+							WriteRow(row.first, table1->head->desc);
+							WriteRow(row.second, table2->head->desc);
+						}
+						else
+						{
+							for (auto& expr : *sel)
+								WriteObj(expr->getObj(row.first, row.second));
+						}
+						cout << endl;
+					}
+				}
 		}
 	}
 	void Update(const string& tbl, const vector<Condition>& conds, ReadExpr& lv, const Object& rv) {

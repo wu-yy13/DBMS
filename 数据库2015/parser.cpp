@@ -35,6 +35,10 @@ static const unordered_map<string, Token::Type> specialToken = {
     {"primary", Token::PRIMARY},
     {"int", Token::INT},
     {"varchar", Token::VARCHAR},
+	{"sum",Token::SUM},
+	{"avg",Token::AVG},
+	{"max",Token::MAX},
+	{"min",Token::MIN},
     {"null", Token::NULL_LIT},
 };
 static const unordered_set<char> IDChar = {
@@ -170,37 +174,192 @@ DeleteStmt* Parser::parseDelete(Parser::TokenIter beg, Parser::TokenIter end) {
     ret->conds = move(where);
     return ret;
 }
-
+// 添加 SUM 、AVG 、MAX、MIN
 SelectStmt* Parser::parseSelect(Parser::TokenIter beg, Parser::TokenIter end) {
-    auto fromLoc = findToken(beg, end, Token::FROM);
-    auto whereLoc = findToken(fromLoc, end, Token::WHERE);
-
-	if (whereLoc == end) // select * from table
+	
+	auto sum = findToken(beg, beg, Token::SUM);
+	auto avg = findToken(beg, beg, Token::AVG);
+	auto max = findToken(beg, beg, Token::MAX);
+	auto min = findToken(beg, beg, Token::MIN);
+	if (sum->token == Token::SUM)
 	{
-		auto from = parseFrom(fromLoc + 1, whereLoc);
-		auto where = parseWhere(end, end);
-		SelectStmt* ret = new SelectStmt;
+		beg = sum + 1;
+		
+		auto fromLoc = findToken(beg, end, Token::FROM);
+		auto whereLoc = findToken(fromLoc, end, Token::WHERE);
 
-		ret->tbl1 = from.first;
-		ret->tbl2 = from.second;
-		ret->conds = move(where);
-		ret->exprs = parseExprs(beg, fromLoc);
+		if (whereLoc == end) // select * from table
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(end, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "sum";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg+1, fromLoc-1);
 
-		return ret;
+			return ret;
+		}
+		else   //select * from table where
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(whereLoc + 1, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "sum";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg+1, fromLoc-1);
+
+			return ret;
+
+		}
+
+
 	}
-	else   //select * from table where
+	else if (avg->token == Token::AVG)
 	{
-		auto from = parseFrom(fromLoc + 1, whereLoc);
-		auto where = parseWhere(whereLoc + 1, end);
-		SelectStmt* ret = new SelectStmt;
+		beg = avg + 1;
+		auto fromLoc = findToken(beg, end, Token::FROM);
+		auto whereLoc = findToken(fromLoc, end, Token::WHERE);
 
-		ret->tbl1 = from.first;
-		ret->tbl2 = from.second;
-		ret->conds = move(where);
-		ret->exprs = parseExprs(beg, fromLoc);
+		if (whereLoc == end) // select * from table
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(end, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "avg";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
 
-		return ret;
+			return ret;
+		}
+		else   //select * from table where
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(whereLoc + 1, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "avg";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
 
+			return ret;
+
+		}
+
+
+	}
+	else if (max->token == Token::MAX)
+	{
+		beg = max + 1;
+
+		auto fromLoc = findToken(beg, end, Token::FROM);
+		auto whereLoc = findToken(fromLoc, end, Token::WHERE);
+
+		if (whereLoc == end) // select * from table
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(end, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "max";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
+
+			return ret;
+		}
+		else   //select * from table where
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(whereLoc + 1, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "max";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
+
+			return ret;
+
+		}
+
+
+	}
+	else if (min->token == Token::MIN)
+	{
+		beg = min + 1;
+
+		auto fromLoc = findToken(beg, end, Token::FROM);
+		auto whereLoc = findToken(fromLoc, end, Token::WHERE);
+
+		if (whereLoc == end) // select * from table
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(end, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "min";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
+
+			return ret;
+		}
+		else   //select * from table where
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(whereLoc + 1, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "min";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg + 1, fromLoc - 1);
+
+			return ret;
+
+		}
+
+
+	}
+	else
+	{ 
+		auto fromLoc = findToken(beg, end, Token::FROM);
+		auto whereLoc = findToken(fromLoc, end, Token::WHERE);
+
+		if (whereLoc == end) // select * from table
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(end, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg, fromLoc);
+
+			return ret;
+		}
+		else   //select * from table where
+		{
+			auto from = parseFrom(fromLoc + 1, whereLoc);
+			auto where = parseWhere(whereLoc + 1, end);
+			SelectStmt* ret = new SelectStmt;
+			ret->type = "";
+			ret->tbl1 = from.first;
+			ret->tbl2 = from.second;
+			ret->conds = move(where);
+			ret->exprs = parseExprs(beg, fromLoc);
+
+			return ret;
+
+		}
 	}
 	
 }
@@ -222,6 +381,7 @@ string Parser::parseTableName(Parser::TokenIter beg, Parser::TokenIter end) {
     return beg->raw;
 }
 
+// 解析带有and 语句的 where
 vector<Condition> Parser::parseWhere(Parser::TokenIter beg, Parser::TokenIter end) {
    vector<Condition> ret;
     if (beg < end) {

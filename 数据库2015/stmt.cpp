@@ -18,7 +18,8 @@ void DeleteStmt::Run(FileManager& manager) {
 }
 
 void SelectStmt::Run(FileManager& manager) {
-    manager.Select(tbl1, tbl2, conds, exprs);
+
+    manager.Select(tbl1, tbl2,type, conds, exprs);
 }
 
 void UpdateStmt::Run(FileManager& manager) {

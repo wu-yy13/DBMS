@@ -33,6 +33,10 @@ struct Token {
         PRIMARY,
         INT,
         VARCHAR,
+		SUM,
+		AVG,
+		MAX,
+		MIN,
         NULL_LIT,
     } token;
     string raw;
@@ -56,7 +60,6 @@ struct Parser {
     CreateDBStmt* parseCreateDB(TokenIter beg, TokenIter end);
     DropDBStmt* parseDropDB(TokenIter beg, TokenIter end);
     UseStmt* parseUse(TokenIter beg, TokenIter end);
-    
     pair<string, string> parseFrom(TokenIter beg, TokenIter end);
     vector<Condition> parseWhere(TokenIter beg, TokenIter end);
     string parseTableName(TokenIter beg, TokenIter end);
